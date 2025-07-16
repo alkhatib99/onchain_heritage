@@ -23,7 +23,7 @@ class ImageRevealWidget extends StatelessWidget {
           children: [
             Positioned.fill(
               child: Image.asset(
-                'lib/assets/images/full_image.png',
+                'assets/images/full_image.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.topLeft,
               ),

@@ -37,7 +37,7 @@ class InteractionController extends GetxController {
     web3client = Web3Client(rpcUrl, Client());
     contractAddress = EthereumAddress.fromHex(contractAddressHex);
 
-    final abiString = await window.fetch('lib/assets/OnchainHeritage.abi.json')
+    final abiString = await window.fetch('assets/OnchainHeritage.abi.json')
       .then((res) => res.text());
     final abi = ContractAbi.fromJson(abiString, 'OnchainHeritage');
 

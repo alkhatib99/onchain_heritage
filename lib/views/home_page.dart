@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onchain_heritage/theme/app_theme.dart';
 import '../controllers/interaction_controller.dart';
 import '../widgets/meta_mask_interaction_widget.dart';
 import '../widgets/image_reveal_widget.dart';
@@ -13,7 +13,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,
+      //  Colors.black,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -27,17 +28,19 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppTheme.darkTheme.textTheme.displayLarge?.color ??
+                          Colors.white,
                     ),
                   ),
                   const SizedBox(height: 20),
                   MetaMaskInteractionWidget(),
                   const SizedBox(height: 20),
                   Text(
-                    "Total Interactions: \${controller.totalInteractions}",
+                    "Total Interactions: \n ${controller.totalInteractions}",
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.white70,
+                      color: AppTheme.darkTheme.textTheme.bodyLarge?.color ??
+                          Colors.white70,
                     ),
                   ),
                   const SizedBox(height: 30),
