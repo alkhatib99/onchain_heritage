@@ -1,90 +1,131 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
+import 'dart:js_interop';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
-import 'package:onchain_heritage/utils/app_const.dart';
+import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
+import '../utils/app_const.dart';
+import '../services/js_eth_provider.dart';
+
+@JS('window.ethereum.request')
+external JSObject ethRequest(JSObject options);
 
 class InteractionController extends GetxController {
   final walletAddress = ''.obs;
   final totalInteractions = 0.obs;
+  final statusMessage = ''.obs;
 
   late Web3Client web3client;
   late DeployedContract contract;
   late ContractFunction participateFunction;
   late ContractFunction totalInteractionsFunction;
-  late EthereumAddress contractAddress;
+  late EthereumAddress contractAddr;
 
-  final rpcUrl = AppConstnats.RPC_URL; // 'https://sepolia.infura.io'; // Base Sepolia RPC
-  // 'https://sepolia.base.org'; // Base Sepolia RPC
+  final rpcUrl = AppConstnats.RPC_URL;
   final contractAddressHex = AppConstnats.CONTRACT_ADDRESS;
-  
-
-  // '0xce303e6041a8c86f273802559a1dfa0f846a6817'; // Replace with actual contract
 
   @override
   void onInit() {
     super.onInit();
     initContract();
-  }
-
-  void setWalletAddress(String address) {
-    walletAddress.value = address;
-    fetchTotalInteractions();
+    setupWalletListener();
   }
 
   Future<void> initContract() async {
-    web3client = Web3Client(rpcUrl, Client());
-    contractAddress = EthereumAddress.fromHex(contractAddressHex);
+    try {
+      contractAddr = EthereumAddress.fromHex(contractAddressHex);
+      web3client = Web3Client(rpcUrl, Client());
+      final abiString =
+          await rootBundle.loadString(AppConstnats.contractAbiPath);
+      final abiJson = jsonDecode(abiString);
 
-    final abiString = await window.fetch('assets/OnchainHeritage.abi.json')
-      .then((res) => res.text());
-    final abi = ContractAbi.fromJson(abiString, 'OnchainHeritage');
+      contract = DeployedContract(
+        ContractAbi.fromJson(jsonEncode(abiJson), 'OnchainHeritage'),
+        contractAddr,
+      );
 
-    contract = DeployedContract(abi, contractAddress);
-    participateFunction = contract.function('participate');
-    totalInteractionsFunction = contract.function('totalInteractions');
+      participateFunction = contract.function('participate');
+      totalInteractionsFunction = contract.function('totalInteractions');
+      fetchTotalInteractions();
+    } catch (e) {
+      statusMessage.value = 'Contract init failed: $e';
+    }
+  }
 
-    fetchTotalInteractions();
+  void setupWalletListener() {
+    setupWalletListener(
+        // (address) => walletAddress.value = address,
+        );
+  }
+
+  Future<void> connectToMetaMask() async {
+    if (!kIsWeb) {
+      statusMessage.value = 'MetaMask is only supported on Web.';
+      return;
+    }
+
+    try {
+      final address = await requestAccounts();
+      walletAddress.value = address;
+      statusMessage.value = 'Connected: ${address.substring(0, 6)}...';
+      fetchTotalInteractions();
+    } catch (e) {
+      statusMessage.value = 'Connection failed: $e';
+    }
+  }
+
+  void participate() {
+    if (walletAddress.value.isEmpty) {
+      statusMessage.value = 'Connect wallet first.';
+      return;
+    }
+
+    final dataHex = _getEncodedData();
+    final txParams = JS('''
+      {
+        "method": "eth_sendTransaction",
+        "params": [{
+          "from": "${walletAddress.value}",
+          "to": "$contractAddressHex",
+          "data": "$dataHex"
+        }]
+      }
+    ''') as JSObject;
+
+    final promise = ethRequest(txParams);
+    final completer = Completer<dynamic>();
+
+    void onSuccess(JSAny result) => completer.complete(result.dartify());
+    void onError(JSAny error) => completer.completeError(error.toString());
+
+    (promise as dynamic).then((onSuccess).toJS, (onError).toJS);
+
+    completer.future.then((txHash) {
+      statusMessage.value = 'Tx sent: $txHash';
+      fetchTotalInteractions();
+    }).catchError((e) {
+      statusMessage.value = 'Tx failed: $e';
+    });
+  }
+
+  String _getEncodedData() {
+    final data = participateFunction.encodeCall([]);
+    return bytesToHex(data, include0x: true);
   }
 
   Future<void> fetchTotalInteractions() async {
-    if (web3client == null || contract == null) return;
-
-    final result = await web3client.call(
-      contract: contract,
-      function: totalInteractionsFunction,
-      params: [],
-    );
-
-    if (result.isNotEmpty) {
-      totalInteractions.value = result[0].toInt();
+    try {
+      final result = await web3client.call(
+        contract: contract,
+        function: totalInteractionsFunction,
+        params: [],
+      );
+      totalInteractions.value = (result.first as BigInt).toInt();
+    } catch (e) {
+      statusMessage.value = 'Failed to load total: $e';
     }
   }
-
-  Future<void> participate() async {
-    if (walletAddress.isEmpty) return;
-
-    final encodedCall = participateFunction.encodeCall([]);
-    final tx = {
-      'from': walletAddress.value,
-      'to': contractAddress.hex,
-      'data': encodedCall,
-    };
-
-    final ethereum = (window as dynamic).ethereum;
-    if (ethereum != null) {
-      final txParams = jsify(tx);
-      ethereum.callMethod('request', [jsify({
-        'method': 'eth_sendTransaction',
-        'params': [txParams]
-      })]).then((_) {
-        fetchTotalInteractions();
-      }).catchError((err) {
-        print("Error sending tx: \$err");
-      });
-    }
-  }
-
-  dynamic jsify(Map map) => map;
 }

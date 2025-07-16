@@ -1,45 +1,39 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/interaction_controller.dart';
 
 class ImageRevealWidget extends StatelessWidget {
-  final InteractionController controller = Get.find();
+  final controller = Get.find<InteractionController>();
 
   ImageRevealWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      int total = controller.totalInteractions.value;
-      double percentageRevealed = (total / 100000).clamp(0.0, 1.0);
-
-      return Container(
-        width: 300,
-        height: 300,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(border: Border.all(color: Colors.white24)),
-        child: Stack(
+    return Obx(() => Column(
           children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/full_image.png',
-                fit: BoxFit.cover,
-                alignment: Alignment.topLeft,
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: 150,
+              width: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.blueGrey,
               ),
-            ),
-            Positioned.fill(
-              child: FractionallySizedBox(
-                widthFactor: 1 - percentageRevealed,
-                alignment: Alignment.topRight,
-                child: Container(
-                  color: Colors.black,
+              child: Center(
+                child: Text(
+                  "${controller.totalInteractions.value}",
+                  style: TextStyle(fontSize: 36, color: Colors.white),
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: controller.walletAddress.isEmpty
+                  ? null
+                  : controller.participate,
+              child: Text("Participate"),
+            ),
           ],
-        ),
-      );
-    });
+        ));
   }
 }
