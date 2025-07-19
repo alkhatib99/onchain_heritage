@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/interaction_controller.dart';
+import 'package:onchain_heritage/app/controllers/interaction_controller.dart';
+import 'package:onchain_heritage/app/widgets/participate_button.dart';
 
 class ImageRevealWidget extends StatelessWidget {
   final controller = Get.find<InteractionController>();
@@ -27,12 +28,13 @@ class ImageRevealWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.walletAddress.isEmpty
-                  ? null
-                  : controller.participate,
-              child: Text("Participate"),
-            ),
+            ParticipateButton(),
+            // ElevatedButton(
+            //   onPressed: controller.walletAddress.isEmpty
+            //       ? null
+            //       : controller.participate(context),
+            //   child: Text("Participate"),
+            // ),
           ],
         ));
   }

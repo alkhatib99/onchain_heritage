@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
 import 'package:onchain_heritage/app/controllers/splash_controller.dart';
 import 'package:onchain_heritage/core/theme/app_theme.dart';
 
@@ -7,7 +7,6 @@ class SplashView extends StatelessWidget {
   const SplashView({super.key});
 
   @override
-
   Widget build(BuildContext context) {
     final SplashController controller = Get.find();
 
@@ -56,7 +55,7 @@ class SplashView extends StatelessWidget {
                   opacity: controller.titleOpacity.value,
                   duration: const Duration(seconds: 1),
                   child: Text(
-                    'BAG MWS DApp',
+                    'BAG DApp  - OnChain Heritage',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           color: AppTheme.whiteText,
                           fontWeight: FontWeight.bold,

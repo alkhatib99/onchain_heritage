@@ -18,6 +18,12 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
+				"name": "userTotal",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
 				"name": "total",
 				"type": "uint256"
 			}
@@ -33,12 +39,25 @@
 				"type": "address"
 			}
 		],
-		"name": "hasParticipated",
+		"name": "interactions",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bool"
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "MAX_INTERACTIONS",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

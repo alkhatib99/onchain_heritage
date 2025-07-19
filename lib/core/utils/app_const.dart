@@ -5,7 +5,9 @@ class AppConstnats {
   static const int timeoutDuration = 30; // in seconds
   static const String supportEmail = 'support@myapp.com';
   static const CONTRACT_ADDRESS =
-      '0xce303e6041a8c86f273802559a1dfa0f846a6817'; // Example contract address
+      '0x63e9284f10c3002dacf9e8c91460718155b0da51'; // Example contract address
   static const String contractAbiPath = 'assets/OnchainHeritage.abi.json';
   static const String RPC_URL = 'https://sepolia.infura.io'; // Base Sepolia RPC
+  static const String RPC_URL_ALCHEMY =
+      'https://eth-sepolia.g.alchemy.com/v2/7K64JRQfwyx6SFyH62HPn7Je0-4c0jZu'; // Alchemy Sepolia RPC
 }
