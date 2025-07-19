@@ -14,11 +14,19 @@ dependencies:
   web3dart: ^2.6.1
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
-
+  flutter_native_splash: ^2.2.19
+  
 flutter:
   uses-material-design: true
   assets:
     - assets/OnchainHeritage.abi.json
     - assets/images/
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: "#000000"        # background same as your canvas splash
+  image: "assets/bag_logo.png"

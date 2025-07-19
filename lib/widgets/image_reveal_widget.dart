@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/interaction_controller.dart';
+import 'package:onchain_heritage/app/controllers/interaction_controller.dart';
 
 class ImageRevealWidget extends StatelessWidget {
   final controller = Get.find<InteractionController>();
