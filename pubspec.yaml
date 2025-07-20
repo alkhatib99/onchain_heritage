@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   get: ^4.6.6
   http: ^0.13.6
   web3dart: ^2.6.1
@@ -30,3 +31,14 @@ flutter_native_splash:
   web: false
   color: "#000000"        # background same as your canvas splash
   image: "assets/bag_logo.png"
+flutter_icons:
+  android: true
+  ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo.png"
+    background_color: "#1a1a1a"
+    theme_color: "#9353D3"
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#1a1a1a"
+  adaptive_icon_foreground: "assets/images/logo.png"
