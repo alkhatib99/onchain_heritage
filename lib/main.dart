@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onchain_heritage/core/routes/app_pages.dart';
+import 'package:onchain_heritage/core/utils/app_const.dart';
 import 'app/views/home_page.dart';
 import 'core/theme/app_theme.dart';
 
@@ -16,7 +17,7 @@ class OnchainHeritageApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
 
-      title: 'Onchain Heritage',
+      title: AppConstnats.appName,
       theme: AppTheme.darkTheme,
       // home: HomePage(),
       // r

@@ -1,6 +1,6 @@
 
 name: onchain_heritage
-description: A Web3 Flutter dApp to reveal pixel art via on-chain interactions
+description: OnchainHeritage is a fully on-chain interactive Web3 experience that transforms every wallet interaction into a meaningful contribution to a collective legacy. Each time a user interacts with the smart contract, they unlock a small part of a large pixel-art image. Once the community reaches 100,000 total interactions, the complete artwork is revealed, symbolizing the power of unity and on-chain participation. 
 version: 1.0.0+1
 
 environment:

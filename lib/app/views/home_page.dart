@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onchain_heritage/core/theme/app_theme.dart';
+import 'package:onchain_heritage/core/utils/app_const.dart';
 import '../controllers/interaction_controller.dart';
 import '../widgets/meta_mask_interaction_widget.dart';
 import '../widgets/image_reveal_widget.dart';
@@ -42,7 +43,7 @@ class HomePage extends StatelessWidget {
                     },
                   ),
                   Text(
-                    "Onchain Heritage",
+                   AppConstnats.appName,
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,

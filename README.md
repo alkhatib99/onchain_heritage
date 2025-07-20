@@ -3,25 +3,36 @@
 
 **Onchain Heritage** is an interactive Web3 dApp built with **Flutter Web + GetX** and deployed on the **Base chain** (Sepolia or Mainnet). Each on-chain interaction reveals a piece of a pixel art image — a tribute to preserving collective on-chain memory.
 
+OnchainHeritage is a fully on-chain interactive Web3 experience that transforms every wallet interaction into a meaningful contribution to a collective legacy. Each time a user interacts with the smart contract, they unlock a small part of a large pixel-art image. Once the community reaches 100,000 total interactions, the complete artwork is revealed, symbolizing the power of unity and on-chain participation.
+
+The project is built using Flutter Web with GetX for a smooth and dynamic frontend experience, and the smart contract is deployed on the Base network (Mainnet or Sepolia). It emphasizes low gas usage and easy accessibility, allowing users to leave a permanent mark on the blockchain.
+
+OnchainHeritage is more than a dApp  it's a digital monument, built piece by piece by the community, preserved forever on the blockchain.
+
 ---
 
 ## 👨‍💻 Developed By
 
 **Abedalqader Alkhatib** — [GitHub: alkhatib99](https://github.com/alkhatib99)
-🛠️ Flutter • Web3 • Solidity
+💪 Flutter • Web3 • Solidity
 
 ---
 
 ## 🚀 Live Demo
 
-> Coming Soon (Once Deployed to Firebase or Vercel)
+> Version 1.0.0 deployed at: [onchain-heritage.alkhatibcrypto.xyz](https://onchain-heritage.alkhatibcrypto.xyz)
 
 ---
 
 ## 🎯 Project Goal
 
-1 interaction = 1 wallet = 1 block of a large pixel-art image.
-When `100,000` unique addresses interact → the **entire image is revealed**.
+Each wallet has multiple **levels**.
+
+- Each **level** requires `100,000` interactions (transactions) to complete.
+- When a level is completed, a **new image is revealed**.
+- You can keep interacting to reach higher levels and unlock more art.
+
+This project aims to preserve history **on-chain**, block by block.
 
 ---
 
@@ -30,7 +41,7 @@ When `100,000` unique addresses interact → the **entire image is revealed**.
 - **Frontend:** Flutter Web + GetX + web3dart + dart:html
 - **Smart Contract:** Solidity (deployed on Base Sepolia)
 - **Wallet:** MetaMask (via `ethereum.request`)
-- **Image Reveal Logic:** Fractional display of full image based on interaction count
+- **Image Reveal Logic:** Fractional display of image per interaction level
 
 ---
 
@@ -49,7 +60,8 @@ lib/
 │   └── app_theme.dart                 # Custom UI styling
 ├── assets/
 │   ├── images/
-│   │   └── full_image.png             # One single image for rendering
+│   │   ├── full_image.png             # Main image to reveal
+│   │   └── logo.png                   # App icon (used for launcher)
 │   └── OnchainHeritage.abi.json      # ABI from deployed contract
 main.dart                              # App entrypoint
 ```
@@ -69,6 +81,7 @@ flutter pub get
 Place the following:
 
 - `full_image.png` → `lib/assets/images/`
+- `logo.png` → `lib/assets/images/` (used as launcher icon)
 - `OnchainHeritage.abi.json` → `lib/assets/`
 
 ### 3. 🔐 Update Contract Address
@@ -81,10 +94,31 @@ final contractAddressHex = '0xYourContractAddressHere';
 
 Replace it with your deployed contract address.
 
-### 4. 🧪 Run Locally
+### 4. 🧶 Run Locally
 
 ```bash
 flutter run -d chrome
+```
+
+### 5. 🚀 Generate Launcher Icon
+
+In `pubspec.yaml`:
+
+```yaml
+dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  remove_alpha_ios: true
+```
+
+Then run:
+
+```bash
+flutter pub run flutter_launcher_icons:main
 ```
 
 ---
@@ -92,36 +126,39 @@ flutter run -d chrome
 ## 🛠️ Smart Contract: OnchainHeritage.sol
 
 ```solidity
-mapping(address => bool) public hasParticipated;
+mapping(address => uint256) public interactions;
 uint256 public totalInteractions;
 
+event Participated(address indexed user, uint256 userTotal, uint256 total);
+
 function participate() public {
-  require(!hasParticipated[msg.sender], "Already participated");
-  hasParticipated[msg.sender] = true;
+  interactions[msg.sender] += 1;
   totalInteractions += 1;
-  emit Participated(msg.sender, totalInteractions);
+  emit Participated(msg.sender, interactions[msg.sender], totalInteractions);
 }
 ```
 
 Deployed to: **Base Sepolia**
-✅ Emits `Participated(address, totalInteractions)` on each successful interaction.
+✅ Emits `Participated(address, userTotal, totalInteractions)` on each interaction.
 
 ---
 
 ## 🎨 Image Logic
 
-- You only need **one image**
-- The widget will cover/uncover it dynamically using `FractionallySizedBox`
-- No slicing or manual editing required
+- One image per level is used.
+- As interaction count increases, more of the image is revealed.
+- When `100k` interactions are reached for the wallet → **next level** unlocks a **new image**.
 
 ---
 
 ## 💡 Roadmap
 
-- [ ] Deploy full version on Firebase / IPFS
-- [ ] Add NFT mint for contributors
+- [X] Deploy v1.0.0 on Vercel
+- [ ] Connect custom domain `onchain-heritage.alkhatibcrypto.xyz`
+- [ ] Add NFT minting for contributors
+- [ ] Dynamic multi-level image unlocking
 - [ ] Leaderboard for early wallets
-- [ ] Season-based reveals
+- [ ] Support for multiple Base networks (mainnet/testnet)
 
 ---
 
@@ -131,6 +168,6 @@ Pull requests are welcome via [github.com/alkhatib99/onchain_heritage](https://g
 
 ---
 
-## 🧠 License
+## 🧐 License
 
 MIT © alkhatib99
